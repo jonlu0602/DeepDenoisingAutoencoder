@@ -39,7 +39,7 @@ You can read many comments inside all .py files.
 
 ## Authors
 
-* **Yu-Ding Lu** - [Linkedin](https://www.linkedin.com/in/yu-ding-lu-40231b139/)
+**Yu-Ding Lu** - [Linkedin](https://www.linkedin.com/in/yu-ding-lu-40231b139/)
 
 ## License
 
