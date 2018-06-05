@@ -74,7 +74,7 @@ def main():
     test_noisy_dir = join(noisy_dir, 'test')
     sr_clean = 16000
     sr_noise = 44100
-    data_num = 10
+    data_num = 10 # set data_num to make testing data numbers for different snr
     snr_list = ['15dB', '5dB', '-5dB']
     syn_train = Synth(clean_test_list, noise_train_list[
                       0:10], sr_clean, sr_noise)
@@ -106,12 +106,14 @@ def main():
     training_files_dir = FLAGS.training_files_dir
     model = REG(tb_dir, saver_dir, train_task, date, gpu_num='3', note=note)
     model.build(init_learning_rate=1e-3, reuse=False)
+
     print('--- Train Model ---')
     model.train(training_files_dir, split_num, epochs, batch_size)
+
     print('--- Test Model ---')
     testing_data_dir = join(noisy_dir, 'test')
     result_dir = '../data/enhanced/{}_{}/'.format(note, date)
-    num_test = 30
+    num_test = 30 # Set this number to decide how many testing data you wanna use. (None => All)
     cpu_cores = 30
     test_saver = '{}_{}/{}/best_saver_{}'.format(
         saver_dir, note, date, train_task)
