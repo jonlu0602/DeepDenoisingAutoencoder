@@ -17,7 +17,6 @@ def np_REG_batch(data1, data2, batch_size, data_len):
     n_end = batch_size
     l = data_len
     while True:
-        # print('next yield...', n_start, n_end)
         if n_end >= l:
             yield data1[n_start:]
             yield data2[n_start:]
@@ -73,10 +72,8 @@ def wav2spec(wavfile, sr, forward_backward=None, SEQUENCE=None, norm=True, hop_l
         frames, dim = Sxx_r.shape
 
         for num, data in enumerate(Sxx_r):
-            # idx_start = idx - NUM_FRAME
-            # idx_end = idx + NUM_FRAME
-            idx_start = idx - 2*NUM_FRAME
-            idx_end = idx
+            idx_start = idx - NUM_FRAME
+            idx_end = idx + NUM_FRAME
             if idx_start < 0:
                 null = np.zeros((-idx_start, dim))
                 tmp = np.concatenate((null, Sxx_r[0:idx_end + 1]), axis=0)
@@ -110,49 +107,12 @@ def spec2wav(wavfile, sr, output_filename, spec_test, hop_length=None):
                      hop_length=hop_length,
                      win_length=512,
                      window=scipy.signal.hann)
-    # (point, frame)
     D = D + epsilon
     phase = np.exp(1j * np.angle(D))
-    # Convert Spectrum to dB
-    # Sxx = np.log10(np.absolute(D)**2)
-    # Sxx_r = np.array(spec_test).T
     Sxx_r_tmp = np.array(spec_test)
     Sxx_r_tmp = np.sqrt(10**Sxx_r_tmp)
-
-    # Sxx_r_tmp = gain_smooth(Sxx_r_tmp, decay_factor=0.4)
     Sxx_r = Sxx_r_tmp.T
-    # Sxx_r = Sxx_r.reshape(phase.shape)
     reverse = np.multiply(Sxx_r, phase)
-    ### overlap block
-    # start = 0
-    # end = 0
-    # start_2 = 0
-    # end_2 = 0
-    # over = 16
-    # shift = 8
-    # result = np.zeros(y.shape)
-    # while start + over < reverse.shape[1]:
-    #     end = start + over
-    #     rev_tmp = reverse[:, start:end]
-    #     result_tmp = librosa.istft(rev_tmp,
-    #                                hop_length=hop_length,
-    #                                win_length=512,
-    #                                window=scipy.signal.hann)
-    #     end_2 = start_2 + result_tmp.shape[0]
-    #     result[start_2:end_2] = result_tmp
-    #     start += shift
-    #     start_2 += int(result_tmp.shape[0] / 2)
-    #     # pdb.set_trace()
-
-    # if start + over >= reverse.shape[1]:
-    #     rev_tmp = reverse[:, start:]
-    #     result_tmp = librosa.istft(rev_tmp,
-    #                                hop_length=hop_length,
-    #                                win_length=512,
-    #                                window=scipy.signal.hann)
-    #     end_2 = start_2 + result_tmp.shape[0]
-    #     result[start_2:end_2] = result_tmp
-    ### overlap block
 
     result = librosa.istft(reverse,
                            hop_length=hop_length,
@@ -161,7 +121,6 @@ def spec2wav(wavfile, sr, output_filename, spec_test, hop_length=None):
 
     y_out = librosa.util.fix_length(result, len(y), mode='edge')
     y_out = y_out/np.max(np.abs(y_out))
-    # print('Write: ', output_filename)
     maxv = np.iinfo(np.int16).max
     librosa.output.write_wav(
         output_filename, (y_out * maxv).astype(np.int16), sr)
@@ -174,9 +133,6 @@ def copy_file(input_file, output_file):
 def _gen_noisy(clean_file_list, noise_file_list, save_dir, snr, sr_clean, sr_noise, num=None):
     sr_clean = 16000
     sr_noise = 20000
-    # snr_dic = {'20dB': 20, '15dB': 15, '10dB': 10, '5dB': 5, '0dB': 0,
-    #            'n5dB': -5, 'n10dB': -10, 'n20dB': -20}
-    # SNR = snr_dic[snr]
     SNR = float(snr.split('dB')[0])
     clean_file = clean_file_list[num]
     noise_file = noise_file_list[num]
@@ -204,19 +160,14 @@ def _gen_noisy(clean_file_list, noise_file_list, save_dir, snr, sr_clean, sr_noi
     librosa.output.write_wav(
         '/'.join([save_dir, save_name]), (y_noisy * maxv).astype(np.int16), sr_clean)
 
-    # print('Write {} !!!'.format(
-    #     '/'.join([save_dir, save_name])))
-
 def _gen_clean(clean_file_list, save_dir, snr, num=None):
     sr_clean = 16000
     noise_name = 'n0'
     clean_file = clean_file_list[num]
-    # for clean_file in clean_list:
     y_clean, sr_clean = librosa.load(clean_file, sr_clean, mono=True)
 
 
     clean_name = clean_file.split('/')[-1].split('.')[0]
-    # print('Write {} !!!'.format('/'.join([save_dir, '{}.wav'.format(clean_name)])))
     maxv = np.iinfo(np.int16).max
     save_name = '{}_{}_{}.wav'.format(snr, noise_name, clean_name)
     librosa.output.write_wav(

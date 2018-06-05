@@ -226,32 +226,3 @@ class REG:
                          re_reg, hop_length=hop_length)
                 copy_file(noisy_file, Noisy_file)
                 copy_file(clean_file, Clean_file)
-
-
-                # X_length = len(X_in_seq2)
-                # re_reg = np.zeros((X_in_seq2.shape[0], X_in_seq2.shape[2]))
-                # idx = 0
-                # shift_num = 8
-                # window_size = 16
-                # while(idx < X_length):
-                #     start = idx
-                #     end = idx + window_size
-                #     X_tmp = X_in_seq2[start:end]
-                #     re_reg_tmp = sess.run([self.reg_layer],
-                #                           feed_dict={self.x_noisy: X_tmp})[:]
-                #     re_reg[start:end] += re_reg_tmp[0]
-                #     idx += shift_num
-                # if idx == X_length:
-                #     spec2wav(noisy_file, 16000, REG_file,
-                #              re_reg, hop_length=hop_length)
-                #     copy_file(noisy_file, Noisy_file)
-                # else:
-                #     idx -= shift_num
-                #     start = idx
-                #     X_tmp = X_in_seq2[start:]
-                #     re_reg_tmp = sess.run([self.reg_layer],
-                #                           feed_dict={self.x_noisy: X_tmp})[:]
-                #     re_reg[start:] += re_reg_tmp[0]
-                #     spec2wav(noisy_file, 16000, REG_file,
-                #              re_reg, hop_length=hop_length)
-                #     copy_file(noisy_file, Noisy_file)
