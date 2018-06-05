@@ -77,23 +77,12 @@ class REG:
                 layer_3 = tf.nn.leaky_relu(tf.add(tf.matmul(layer_2, w['w_3']), b['b_3']))
                 layer_4 = tf.nn.leaky_relu(tf.add(tf.matmul(layer_3, w['w_4']), b['b_4']))
                 self.reg_layer = tf.add(tf.matmul(layer_4, w['w_o']), b['b_o'])
-           
-                # # self.x_noisy = tf.keras.Input(257)
-                # layer_1 = tf.keras.layers.Dense(128, activation='relu')(self.x_noisy)
-                # # layer_2 = tf.keras.layers.Dense(128, activation='relu')(layer_1)
-                # # layer_3 = tf.keras.layers.Dense(128, activation='relu')(layer_2)
-                # self.reg_layer = tf.add(tf.matmul(layer_1, w['w_o']), b['b_o'])
 
 
             with tf.name_scope('reg_loss'):
-                # reg_variables = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
-                # reg_term = tf.contrib.layers.apply_regularization(regularizer, reg_variables)
+
                 self.loss_reg = tf.losses.mean_squared_error(
                     self.y_clean, self.reg_layer)
-                # self.loss_reg = tf.losses.log_loss(
-                #     self.y_clean, self.reg_layer)
-
-                # self.loss_reg += reg_term
 
                 tf.summary.scalar('Loss reg', self.loss_reg)
             
@@ -109,11 +98,6 @@ class REG:
             gradients, _ = tf.clip_by_global_norm(gradients, 0.5)
             self.optimizer = optimizer.apply_gradients(zip(gradients, v),
                                                       global_step=self.global_step)
-
-            # self.optimizer = tf.train.AdamOptimizer(self.exp_learning_rate).minimize(self.loss_reg, global_step=self.global_step)
-            # self.optimizer = tf.train.AdamOptimizer(learning_rate=0.001).minimize(self.loss_reg)
-            # self.optimizer = tf.train.RMSPropOptimizer(learning_rate=0.001).minimize(self.loss_reg, global_step=self.global_step)
-
             self.saver = tf.train.Saver()
 
 
@@ -137,7 +121,7 @@ class REG:
             writer = tf.summary.FileWriter(
                 self.tb_dir, sess.graph,  max_queue=10)
             merge_op = tf.summary.merge_all()
-            for epoch in epochs:
+            for epoch in tqdm(epochs):
                 shuffle_list = np.arange(split_num)
                 np.random.shuffle(shuffle_list)
                 loss_reg_tmp = 0.
@@ -151,8 +135,7 @@ class REG:
                     data_len = len(clean_data)
                     data_batch = np_REG_batch(
                         noisy_data, clean_data, batch_size, data_len)
-                    for batch in tqdm(range(int(data_len / batch_size))):
-                        # for batch in tqdm(range(10)):
+                    for batch in range(int(data_len / batch_size)):
                         noisy_batch, clean_batch = next(
                             data_batch), next(data_batch)
                         feed_dict = {self.x_noisy: noisy_batch,

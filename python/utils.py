@@ -206,8 +206,8 @@ def _create_split_h5(clean_split_list,
 
     noisy_data = np.vstack(noisy_tmp)
     y_clean_data = np.vstack(clean_tmp)
-    print('Clean shape:', y_clean_data.shape)
-    print('Noisy shape: ', noisy_data.shape)
+    # print('Clean shape:', y_clean_data.shape)
+    # print('Noisy shape: ', noisy_data.shape)
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)

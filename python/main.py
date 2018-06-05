@@ -40,10 +40,8 @@ def main():
     enhanced_dir = FLAGS.enhanced_dir
     tb_dir = FLAGS.tb_dir
     saver_dir = FLAGS.saver_dir
-
     TRAIN = FLAGS.TRAIN
     TEST = FLAGS.TEST
-
     ncores = FLAGS.n_cores
     epochs = FLAGS.epochs
     batch_size = FLAGS.batch_size
