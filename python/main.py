@@ -33,7 +33,6 @@ tf.flags.DEFINE_float('learning_rate', 1e-3, 'learning rate')
 
 
 def main():
-    print('haha')
     clean_dir = FLAGS.clean_dir
     noise_dir = FLAGS.noise_dir
     noisy_dir = FLAGS.noisy_dir
@@ -74,9 +73,9 @@ def main():
     sr_noise = 44100
     data_num = 10 # set data_num to make testing data numbers for different snr
     snr_list = ['15dB', '5dB', '-5dB']
-    syn_train = Synth(clean_test_list, noise_train_list[
+    syn_test = Synth(clean_test_list, noise_train_list[
                       0:10], sr_clean, sr_noise)
-    syn_train.gen_noisy(snr_list, test_noisy_dir,
+    syn_test.gen_noisy(snr_list, test_noisy_dir,
                         data_num=data_num, ADD_CLEAN=True, cpu_cores=ncores)
     # ===========================================================
     # ===========       Create Training Matrix       ============
@@ -89,7 +88,7 @@ def main():
     gen_mat = GenMatrix(training_files_dir, train_task, train_noisy_dir)
     split_num = 50  # number of spliting files
     iter_num = 2  # set iter number to use multi-processing, cpu_cores = split_num/iter_num
-    input_sequence = True  # set input data is sequence or not
+    input_sequence = False  # set input data is sequence or not
     gen_mat.create_h5(split_num=split_num, iter_num=iter_num,
                       input_sequence=input_sequence,
                       DEL_TRAIN_WAV=DEL_TRAIN_WAV)

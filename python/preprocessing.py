@@ -118,7 +118,7 @@ class GenMatrix:
         start = 0
         end = cpu_cores
         for num in range(iter_num):
-            print(start, end)
+            # print(start, end)
             pool = Pool(cpu_cores)
             func = partial(_create_split_h5, clean_split_list, noisy_split_list,
                            self.save_h5_dir, self.save_h5_name, input_sequence)

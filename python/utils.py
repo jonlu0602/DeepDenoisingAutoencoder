@@ -187,15 +187,15 @@ def _create_split_h5(clean_split_list,
         data_name = noisy_file.split('/')[-1]
         # you can set noisy data is sequence or not
         noisy_spec = wav2spec(
-            noisy_file, sr=16000, forward_backward=True, SEQUENCE=False, norm=True, hop_length=256)
+            noisy_file, sr=16000, forward_backward=True, SEQUENCE=input_sequence, norm=True, hop_length=256)
         clean_spec = wav2spec(
-            clean_file, sr=16000, forward_backward=False, SEQUENCE=False, norm=False, hop_length=256)
+            clean_file, sr=16000, forward_backward=False, SEQUENCE=input_sequence, norm=False, hop_length=256)
 
         noisy_tmp.append(noisy_spec)
         clean_tmp.append(clean_spec)
         if count % int(len(clean_split_list[split_num]) / 10) == 0:
             tmp = int(len(clean_split_list[split_num]) / 10)
-            print('Part {} {}%'.format(split_num, 10 * count / tmp))
+            # print('Part {} {}%'.format(split_num, 10 * count / tmp))
         count += 1
         if clean_spec.shape[0] == noisy_spec.shape[0]:
             continue
