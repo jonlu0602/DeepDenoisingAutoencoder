@@ -27,7 +27,7 @@ tf.flags.DEFINE_string('saver_dir', '../model/saver', 'set folder for saver')
 tf.flags.DEFINE_bool('TRAIN', True, 'train this model or not')
 tf.flags.DEFINE_bool('TEST', True, 'test this model or not')
 tf.flags.DEFINE_integer('n_cores', 20, 'set cpu cores')
-tf.flags.DEFINE_integer('epochs', 50, 'epochs for training iterations')
+tf.flags.DEFINE_integer('epochs', 100, 'epochs for training iterations')
 tf.flags.DEFINE_integer('batch_size', 32, 'number of batch size')
 tf.flags.DEFINE_float('learning_rate', 1e-3, 'learning rate')
 
@@ -51,17 +51,19 @@ def main():
     # ===========================================================
     # ===========       Synthesize Noisy Data        ============
     # ===========================================================
-    clean_file_list = search_wav(clean_dir)[0:100]
+    clean_file_list = search_wav(clean_dir)                                 
     clean_train_list, clean_test_list = train_test_split(
         clean_file_list, test_size=0.2)
-    noise_file_list = search_wav(noise_dir)[0:10]
+    noise_file_list = search_wav(noise_dir)[0:20]
     noise_train_list, noise_test_list = train_test_split(
         noise_file_list, test_size=0.2)
+    noise_test_list = noise_train_list # test on the same noise
+
     print('--- Synthesize Training Noisy Data ---')
     train_noisy_dir = join(noisy_dir, 'train')
     sr_clean = 16000
     sr_noise = 44100
-    snr_list = ['20dB', '10dB']
+    snr_list = ['20dB', '10dB', '0dB']
     data_num = None  # set data_num to make training data numbers for different snr
     syn_train = Synth(clean_train_list, noise_train_list, sr_clean, sr_noise)
     syn_train.gen_noisy(snr_list, train_noisy_dir,
@@ -96,7 +98,7 @@ def main():
     # ===========================================================
     print('--- Build Model ---')
     note = 'DDAE'
-    date = '0604'
+    date = '0720'
     split_num = 50
     training_files_dir = FLAGS.training_files_dir
     model = REG(tb_dir, saver_dir, train_task, date, gpu_num='3', note=note)
