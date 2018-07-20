@@ -131,8 +131,6 @@ def copy_file(input_file, output_file):
 
 
 def _gen_noisy(clean_file_list, noise_file_list, save_dir, snr, sr_clean, sr_noise, num=None):
-    sr_clean = 16000
-    sr_noise = 20000
     SNR = float(snr.split('dB')[0])
     clean_file = clean_file_list[num]
     noise_file = noise_file_list[num]
@@ -193,10 +191,10 @@ def _create_split_h5(clean_split_list,
 
         noisy_tmp.append(noisy_spec)
         clean_tmp.append(clean_spec)
-        if count % int(len(clean_split_list[split_num]) / 10) == 0:
-            tmp = int(len(clean_split_list[split_num]) / 10)
+        # if count % int(len(clean_split_list[split_num]) / 10) == 0:
+        #     tmp = int(len(clean_split_list[split_num]) / 10)
             # print('Part {} {}%'.format(split_num, 10 * count / tmp))
-        count += 1
+        # count += 1
         if clean_spec.shape[0] == noisy_spec.shape[0]:
             continue
         else:
@@ -206,8 +204,6 @@ def _create_split_h5(clean_split_list,
 
     noisy_data = np.vstack(noisy_tmp)
     y_clean_data = np.vstack(clean_tmp)
-    # print('Clean shape:', y_clean_data.shape)
-    # print('Noisy shape: ', noisy_data.shape)
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)

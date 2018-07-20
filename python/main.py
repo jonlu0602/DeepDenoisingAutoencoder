@@ -12,9 +12,9 @@ from sklearn.cross_validation import train_test_split
 np.random.seed(1234567)
 
 FLAGS = tf.flags.FLAGS
-tf.flags.DEFINE_string('clean_dir', '../data/raw/clean',
+tf.flags.DEFINE_string('clean_dir', '/mnt/md1/user_jonlu/Github/DeepDenoisingAutoencoder/data/raw/clean',
                        'set clean data folder')
-tf.flags.DEFINE_string('noise_dir', '../data/raw/noise',
+tf.flags.DEFINE_string('noise_dir', '/mnt/md1/user_jonlu/Github/DeepDenoisingAutoencoder/data/raw/noise',
                        'set noise data folder')
 tf.flags.DEFINE_string('noisy_dir', '../data/noisy',
                        'set noisy(clean mixed with noise) data folder')
@@ -51,30 +51,28 @@ def main():
     # ===========================================================
     # ===========       Synthesize Noisy Data        ============
     # ===========================================================
-    clean_file_list = search_wav(clean_dir)
+    clean_file_list = search_wav(clean_dir)[0:100]
     clean_train_list, clean_test_list = train_test_split(
         clean_file_list, test_size=0.2)
-    noise_file_list = search_wav(noise_dir)
+    noise_file_list = search_wav(noise_dir)[0:10]
     noise_train_list, noise_test_list = train_test_split(
         noise_file_list, test_size=0.2)
     print('--- Synthesize Training Noisy Data ---')
     train_noisy_dir = join(noisy_dir, 'train')
     sr_clean = 16000
     sr_noise = 44100
-    snr_list = ['20dB', '0dB', '-20dB']
-    data_num = 100  # set data_num to make training data numbers for different snr
-    syn_train = Synth(clean_train_list, noise_train_list[
-                      0:10], sr_clean, sr_noise)
+    snr_list = ['20dB', '10dB']
+    data_num = None  # set data_num to make training data numbers for different snr
+    syn_train = Synth(clean_train_list, noise_train_list, sr_clean, sr_noise)
     syn_train.gen_noisy(snr_list, train_noisy_dir,
                         data_num=data_num, ADD_CLEAN=True, cpu_cores=ncores)
     print('--- Synthesize Testing Noisy Data ---')
     test_noisy_dir = join(noisy_dir, 'test')
     sr_clean = 16000
     sr_noise = 44100
-    data_num = 10 # set data_num to make testing data numbers for different snr
-    snr_list = ['15dB', '5dB', '-5dB']
-    syn_test = Synth(clean_test_list, noise_train_list[
-                      0:10], sr_clean, sr_noise)
+    data_num = None # set data_num to make testing data numbers for different snr
+    snr_list = ['15dB']
+    syn_test = Synth(clean_test_list, noise_test_list, sr_clean, sr_noise)
     syn_test.gen_noisy(snr_list, test_noisy_dir,
                         data_num=data_num, ADD_CLEAN=True, cpu_cores=ncores)
     # ===========================================================

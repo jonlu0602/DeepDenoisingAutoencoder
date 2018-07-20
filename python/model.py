@@ -6,6 +6,7 @@ import scipy
 import os
 from os.path import join
 from tqdm import tqdm
+tqdm.monitor_interval = 0
 from utils import np_REG_batch, search_wav, wav2spec, spec2wav, copy_file
 
 

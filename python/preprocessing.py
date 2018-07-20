@@ -11,6 +11,7 @@ from functools import partial
 from sklearn.utils import shuffle
 from os.path import join
 
+np.random.seed(1)
 
 class Synth:
 
@@ -47,7 +48,6 @@ class Synth:
         print('Clean data:', clean_length)
         print('Noise data:', noise_length)
         print('From {} noise file generate {} noisy file'.format(noise_length, clean_length))
-
         num_list = range(clean_length)
         # _gen_noisy(clean_data_list, noise_data_list, noisy_train_dir, snr, TIMIT_dir_name, num)
         for snr in snr_list:
@@ -86,7 +86,6 @@ class GenMatrix:
         tmp1 = []
         tmp2 = []
         tmp3 = []
-        # noisy_dir = join(noisy_dir, 'train')
         training_data_list = search_wav(self.noisy_dir)
         print('Total training files: ', len(training_data_list))
 
@@ -106,14 +105,10 @@ class GenMatrix:
             tmp1.append(clean_file)
             tmp2.append(noisy_file)
         
-        training_num = 30000
         t1, t2 = shuffle(np.array(tmp1), np.array(tmp2))
-        t1 = t1[:training_num]
-        t2 = t2[:training_num]
 
         clean_split_list = split_list(t1, wanted_parts=split_num)
         noisy_split_list = split_list(t2, wanted_parts=split_num)
-
 
         start = 0
         end = cpu_cores
